@@ -12,9 +12,6 @@ function App() {
       <Route path="/" element={<Layout />}>
         {/* These "child" routes will be rendered inside the Layout */}
         <Route index element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
 
       </Route>
         <Route path="/login" element={<LoginPage />} />
