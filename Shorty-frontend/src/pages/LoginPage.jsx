@@ -1,4 +1,4 @@
-import { useState } from 'react'; // <-- ADDED
+import { useEffect, useState } from 'react'; // <-- ADDED
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -16,6 +16,16 @@ function LoginPage() {
   // --- REPLACED LOGIC ---
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  useEffect(()=>{
+          const { token } = localStorage.getItem("token")
+
+      if (token) {
+        // This is the part that saves the token
+        //login(token); // Pass token to context, which saves it to localStorage
+        
+        navigate('/dashboard');
+      }
+  },[])
 const onSubmit = async (data) => {
     setLoading(true);
     setError('');
