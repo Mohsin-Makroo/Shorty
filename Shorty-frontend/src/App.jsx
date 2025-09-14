@@ -1,25 +1,19 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import DashboardPage from "./pages/DashboardPage";
 
-function App() {
+export default function App() {
   return (
-     <Routes>
-      {/* This route contains our main layout */}
+    <Routes>
       <Route path="/" element={<Layout />}>
-        {/* These "child" routes will be rendered inside the Layout */}
         <Route index element={<HomePage />} />
-
       </Route>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignUpPage />} />
+      <Route path="/dashboard" element={<DashboardPage />} />
     </Routes>
-   
   );
 }
-
-export default App;
