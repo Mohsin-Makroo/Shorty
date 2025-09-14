@@ -10,11 +10,11 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
-      </Route>
 
       <Route path="login" element={<LoginPage />} />
       <Route path="signup" element={<SignUpPage />} />
       <Route path="dashboard" element={<DashboardPage />} />
+      </Route>
     </Routes>
   );
 }
