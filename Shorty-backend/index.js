@@ -10,7 +10,7 @@ import prisma from "./prisma/client.js";
 import authMiddleware from "./middleware/auth.js";
 
 const app = express();
-const PORT = 5001;
+const PORT =  process.env.PORT||5001;
 
 app.use(express.json());
 app.use(cors()); // <-- Add this line
