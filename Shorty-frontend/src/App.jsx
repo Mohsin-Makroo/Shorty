@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -7,7 +7,8 @@ import DashboardPage from "./pages/DashboardPage";
 
 function App() {
   return (
-    <Routes>
+    <BrowserRouter>
+     <Routes>
       {/* This route contains our main layout */}
       <Route path="/" element={<Layout />}>
         {/* These "child" routes will be rendered inside the Layout */}
@@ -17,6 +18,8 @@ function App() {
         <Route path="dashboard" element={<DashboardPage />} />
       </Route>
     </Routes>
+    </BrowserRouter>
+   
   );
 }
 
