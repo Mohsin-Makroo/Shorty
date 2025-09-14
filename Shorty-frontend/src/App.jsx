@@ -7,6 +7,7 @@ import DashboardPage from "./pages/DashboardPage";
 
 export default function App() {
   return (
+    <BrowserRouter>
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
@@ -15,5 +16,6 @@ export default function App() {
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/dashboard" element={<DashboardPage />} />
     </Routes>
+    </BrowserRouter>
   );
 }
