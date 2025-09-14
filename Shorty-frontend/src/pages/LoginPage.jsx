@@ -16,16 +16,16 @@ function LoginPage() {
   // --- REPLACED LOGIC ---
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  useEffect(()=>{
-          const { token } = localStorage.getItem("token")
 
+          const { token } = localStorage.getItem("token")
+      console.log("main toh hun")
       if (token) {
         // This is the part that saves the token
         //login(token); // Pass token to context, which saves it to localStorage
         
         navigate('/dashboard');
       }
-  },[])
+  
 const onSubmit = async (data) => {
     setLoading(true);
     setError('');
