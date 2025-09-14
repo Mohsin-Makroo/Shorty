@@ -7,7 +7,6 @@ import DashboardPage from "./pages/DashboardPage";
 
 function App() {
   return (
-    <BrowserRouter>
      <Routes>
       {/* This route contains our main layout */}
       <Route path="/" element={<Layout />}>
@@ -22,7 +21,6 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
     </Routes>
-    </BrowserRouter>
    
   );
 }
