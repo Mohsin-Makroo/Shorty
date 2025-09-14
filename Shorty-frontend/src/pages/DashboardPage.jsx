@@ -98,8 +98,9 @@ function DashboardPage() {
     setIsModalOpen(true);
   };
   // ---------------------------------------------------
-
-  if (!isAuthenticated) {
+const token =localStorage.getItem("token")
+  if (!token) {
+    console.log("main toh refresh pe chala jata hun")
     return <Navigate to="/login" />;
   }
 

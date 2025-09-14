@@ -18,11 +18,11 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
 
           const { token } = localStorage.getItem("token")
-      console.log("main toh hun")
+      
       if (token) {
         // This is the part that saves the token
         //login(token); // Pass token to context, which saves it to localStorage
-        
+        console.log("main toh hun")
         navigate('/dashboard');
       }
   
