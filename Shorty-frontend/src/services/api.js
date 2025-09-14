@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5001/api',
+  baseURL: 'https://shorty-1.onrender.com/api',
 });
 
 // Use an interceptor to add the token to every request
