@@ -8,7 +8,33 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from './prisma/client.js';
 
-// Auth middleware to protect routes (reads token from Authorization header)
+const app = express();
+const PORT = process.env.PORT || 5001;
+
+// Dynamic CORS configuration to allow Vercel preview URLs and your prod domain
+const whitelist = [
+  'https://shorty-nu.vercel.app/', // Replace with your actual production domain
+];
+
+const vercelPreviewRegex = /^https:\/\/[a-z0-9-]+\.vercel\.app$/;
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // Allow requests with no origin (like Postman)
+    if (whitelist.indexOf(origin) !== -1) return callback(null, true);
+    if (vercelPreviewRegex.test(origin)) return callback(null, true);
+    callback(new Error(`CORS policy does not allow access from: ${origin}`));
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+app.use(express.json());
+
+// Auth middleware to protect routes
 function authMiddleware(req, res, next) {
   const authHeader = req.header('Authorization');
   if (!authHeader) {
@@ -27,26 +53,12 @@ function authMiddleware(req, res, next) {
   }
 }
 
-const app = express();
-const PORT = process.env.PORT || 5001;
-
-// CORS configuration to allow your frontend origin
-const corsOptions = {
-  origin: 'https://shorty-nu.vercel.app', // Replace with your actual frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true, // enable if you use credentials/cookies
-};
-
-app.use(cors(corsOptions));
-app.use(express.json());
-
 // Health check
 app.get('/', (req, res) => {
   res.send('Hello from the Shorty Backend!');
 });
 
-// Signup route
+// Signup
 app.post('/api/auth/signup', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -65,7 +77,7 @@ app.post('/api/auth/signup', async (req, res) => {
   }
 });
 
-// Login route
+// Login
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -84,7 +96,7 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// Shorten URL route (protected)
+// Shorten a link (protected)
 app.post('/api/shorten', authMiddleware, async (req, res) => {
   const { longUrl } = req.body;
   const userId = req.user.id;
@@ -97,6 +109,7 @@ app.post('/api/shorten', authMiddleware, async (req, res) => {
       { originalURL: longUrl, domain: DOMAIN },
       { headers: { authorization: API_KEY } }
     );
+
     const { shortURL } = createResponse.data;
     const path = new URL(shortURL).pathname.slice(1);
 
@@ -155,7 +168,7 @@ app.get('/api/links', authMiddleware, async (req, res) => {
             shortUrl: link.shortUrl,
             totalClicks: statsResponse.data.totalClicks ?? 0,
           };
-        } catch (error) {
+        } catch {
           return {
             id: link.id,
             originalUrl: link.originalUrl,
