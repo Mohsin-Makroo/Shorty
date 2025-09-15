@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"; // <-- UPDATED
+import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -6,12 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "../hooks/useAuth";
 import { QRCodeSVG } from "qrcode.react";
-import api from "../services/api"; // <-- ADDED
+import api from "../services/api";
 
-// QR Code component remains the same, but we update the URL it uses
 const QRCodeModal = ({ link, onClose }) => {
   if (!link) return null;
-  // Use the full shortUrl from the API
   const fullShortUrl = link.shortUrl;
   return (
     <div
@@ -42,7 +40,6 @@ function DashboardPage() {
   const { isAuthenticated } = useAuth();
   const { register, handleSubmit, reset } = useForm();
 
-  // --- REPLACED LOGIC: REAL STATE MANAGEMENT ---
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [toastMessage, setToastMessage] = useState("");
@@ -54,7 +51,7 @@ function DashboardPage() {
       setLoading(true);
       const response = await api.get("/links");
       setLinks(response.data);
-    } catch (error) {
+    } catch {
       setToastMessage("Error fetching links.");
       setTimeout(() => setToastMessage(""), 2000);
     } finally {
@@ -70,9 +67,9 @@ function DashboardPage() {
     try {
       await api.post("/shorten", { longUrl: data.url });
       reset();
-      fetchLinks(); // Refresh the list
+      fetchLinks();
       setToastMessage("Link created successfully!");
-    } catch (error) {
+    } catch {
       setToastMessage("Failed to create link.");
     } finally {
       setTimeout(() => setToastMessage(""), 2000);
@@ -80,8 +77,7 @@ function DashboardPage() {
   };
 
   const handleDelete = (idToDelete) => {
-    // Note: A backend endpoint would be needed for permanent deletion.
-    // This is a temporary UI-only delete for now.
+    // Temporary UI update only; backend deletion endpoint needed
     setLinks(links.filter((link) => link.id !== idToDelete));
     setToastMessage("Link successfully deleted!");
     setTimeout(() => setToastMessage(""), 2000);
@@ -97,12 +93,9 @@ function DashboardPage() {
     setSelectedLink(link);
     setIsModalOpen(true);
   };
-  // ---------------------------------------------------
-const token =localStorage.getItem("token")
-  if (!token) {
-    console.log("main toh refresh pe chala jata hun")
-    return <Navigate to="/login" />;
-  }
+
+  const token = localStorage.getItem("token");
+  if (!token) return <Navigate to="/login" />;
 
   return (
     <>
@@ -113,20 +106,14 @@ const token =localStorage.getItem("token")
               <CardTitle>Create a New Link</CardTitle>
             </CardHeader>
             <CardContent>
-              <form
-                onSubmit={handleSubmit(handleCreateLink)}
-                className="flex flex-col sm:flex-row gap-2"
-              >
+              <form onSubmit={handleSubmit(handleCreateLink)} className="flex flex-col sm:flex-row gap-2">
                 <Input
                   {...register("url", { required: true })}
                   type="url"
                   placeholder="https://your-long-url.com/goes/here"
                   className="flex-grow"
                 />
-                <Button
-                  type="submit"
-                  className="bg-[#040F0F] text-white hover:bg-[#040F0F]/90"
-                >
+                <Button type="submit" className="bg-[#040F0F] text-white hover:bg-[#040F0F]/90">
                   Shorten!
                 </Button>
               </form>
@@ -137,33 +124,19 @@ const token =localStorage.getItem("token")
         <section>
           <h2 className="text-3xl font-bold mb-4 text-white">Your Links</h2>
           <div className="space-y-4 max-h-[55vh] overflow-y-auto pr-4">
-            {/* --- UPDATED TO RENDER REAL DATA --- */}
             {loading ? (
               <p className="text-white text-center">Loading links...</p>
             ) : (
               links.map((link) => (
-                <Card
-                  key={link.id}
-                  className="bg-white text-[#040F0F] border-slate-200"
-                >
+                <Card key={link.id} className="bg-white text-[#040F0F] border-slate-200">
                   <CardContent className="p-4 flex flex-col md:flex-row items-center justify-between gap-4">
                     <div className="flex-grow">
-                      <p className="font-bold text-lg">
-                        {/* Display the path from the full URL */}
-                        {link.shortUrl.replace(/^https?:\/\//, "")}
-                      </p>
-                      <p className="text-sm text-slate-500 truncate max-w-md">
-                        {link.originalUrl}
-                      </p>
+                      <p className="font-bold text-lg">{link.shortUrl.replace(/^https?:\/\//, "")}</p>
+                      <p className="text-sm text-slate-500 truncate max-w-md">{link.originalUrl}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      {/* Use the 'clicks' property from the backend */}
-                      <p className="font-bold text-xl">
-                        {link.totalClicks}
-                      </p>{" "}
-                      <p className="text-sm rounded-xl p-2 bg-slate-900 text-white">
-                        Clicks
-                      </p>
+                      <p className="font-bold text-xl">{link.totalClicks}</p>{" "}
+                      <p className="text-sm rounded-xl p-2 bg-slate-900 text-white">Clicks</p>
                     </div>
                     <div className="flex gap-2">
                       <Button
@@ -192,23 +165,15 @@ const token =localStorage.getItem("token")
                 </Card>
               ))
             )}
-            {/* -------------------------------------- */}
           </div>
         </section>
       </div>
 
       {toastMessage && (
-        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-900 text-white py-2 px-4 rounded-lg shadow-lg animate-fade-in-up">
-          {toastMessage}
-        </div>
+        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-900 text-white py-2 px-4 rounded-lg shadow-lg animate-fade-in-up">{toastMessage}</div>
       )}
 
-      {isModalOpen && (
-        <QRCodeModal
-          link={selectedLink}
-          onClose={() => setIsModalOpen(false)}
-        />
-      )}
+      {isModalOpen && <QRCodeModal link={selectedLink} onClose={() => setIsModalOpen(false)} />}
     </>
   );
 }
